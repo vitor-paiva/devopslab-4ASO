@@ -23,6 +23,6 @@ deploy:
   api_key: $HEROKU_API_KEY
   edge: true 
   app: devopslab-vitor-paiva
-  on:
-    branch: main
   strategy: api
+  on:
+      branch: main
