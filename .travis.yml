@@ -20,4 +20,7 @@ deploy:
   edge: true 
   app: devopslab-vitor-paiva
   on:
-      branch: main
+  branch: main
+
+script:                                                                           - python -m unittest -v test
+  - echo "passei por aqui"
