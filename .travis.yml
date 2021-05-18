@@ -22,5 +22,6 @@ deploy:
   on:
   branch: main
 
-script:                                                                           - python -m unittest -v test
+script:
+  - python -m unittest -v test
   - echo "passei por aqui"
