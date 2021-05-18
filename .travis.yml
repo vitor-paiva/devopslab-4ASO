@@ -5,13 +5,17 @@ language: python
 python:
   - "3.7.9"
 
+dist: xenial
+
+os: linux
+
 # Instalação de Módulos que são necessários para a Aplicação.
 install:
   - pip install flask
 
 # Defini o script de Teste que deve rodar toda vez que o código for alterado.
 script:
-  - python -m unittest -v test
+  - python -m unittest -v test || travis_terminate 1;
 
 # Definir o Deploy no Heroku
 deploy:
@@ -21,6 +25,4 @@ deploy:
   app: devopslab-vitor-paiva
   on:
   branch: main
-
-script:
-  - python -m unittest -v test || travis_terminate 1;
+  strategy: api
