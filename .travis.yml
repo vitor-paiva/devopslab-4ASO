@@ -24,5 +24,3 @@ deploy:
   edge: true 
   app: devopslab-vitor-paiva
   strategy: api
-  on:
-      branch: main
