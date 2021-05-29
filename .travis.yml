@@ -13,26 +13,44 @@ before_install:
   -in lab-devops-cloud-vitor-paiva-83882c5e6c62.json.enc -out ../lab-devops-cloud-vitor-paiva-83882c5e6c62.json
   -d
 
+jobs:
+  include:
+    - stage: Build
 
-# Instalação de Módulos que são necessários para a Aplicação.
-install:
-  - pip install flask
+      name: "Testes Unitarios"
+      # Instalação de Módulos que são necessários para a Aplicação.
+      install:
+        - pip install flask flask-wtf coverage
+      script:  # Defini o script de Teste que deve rodar toda vez que o código for alterado.
+        - coverage run test.py || travis_terminate 1;
+        - coverage report app.py || travis_terminate 1;
+        - coverage xml app.py || travis_terminate 1;
 
-# Defini o script de Teste que deve rodar toda vez que o código for alterado.
-script:
-  - python -m unittest -v test || travis_terminate 1;
+    - stage: STG Deploy
+      script: skip
+      deploy:
+        provider: heroku
+        strategy: api
+        api_key: $HEROKU_API_KEY
+        edge: true
+        app: devopslab-vitor-paiva
+        on:
+          branch: main
 
-# Definir o Deploy no Heroku
-deploy:
-  provider: heroku
-  api_key: $HEROKU_API_KEY
-  edge: true 
-  app: devopslab-vitor-paiva
-  strategy: api
+    - stage: STG TEST
+      script:
+        - curl https://devopslab-vitor-paiva.herokuapp.com/ | grep Hello || travis_terminate 1;
 
-deploy:
-  provider: gae
-  keyfile: ../lab-devops-cloud-vitor-paiva-83882c5e6c62.json
-  project: lab-devops-cloud-vitor-paiva
-  on:
-     branch: main
+    - stage: PROD Deploy
+      script: skip
+      # Definir o Deploy no Google Cloud
+      deploy:
+        provider: gae
+        keyfile: ../lab-devops-cloud-vitor-paiva-83882c5e6c62.json
+        project: lab-devops-cloud-vitor-paiva
+        on:
+          branch: main
+
+    - stage: PROD TEST
+      script:
+        - curl https://lab-devops-cloud-vitor-paiva.uc.r.appspot.com/ | grep Hello || travis_terminate 1;
