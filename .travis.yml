@@ -13,6 +13,11 @@ before_install:
   -in lab-devops-cloud-vitor-paiva-83882c5e6c62.json.enc -out ../lab-devops-cloud-vitor-paiva-83882c5e6c62.json
   -d
 
+addons:
+  sonarcloud:
+    organization: devopslab-vitor-paiva
+    token: ${SONAR_TOKEN}
+
 jobs:
   include:
     - stage: Build
@@ -25,6 +30,7 @@ jobs:
         - coverage run test.py || travis_terminate 1;
         - coverage report app.py || travis_terminate 1;
         - coverage xml app.py || travis_terminate 1;
+        - sonar-scanner || travis_terminate 1;
 
     - stage: STG Deploy
       script: skip
